@@ -9,8 +9,8 @@ pais varchar(50) not null,
 region varchar(50) not null,
 codigo_postal varchar(10) not null,
 telefono varchar(20) not null,
-linea_direccion1 varchar(50) not null,
-linea_direccion2 varchar(50) not null
+linea_direccion1 varchar(50) ,
+linea_direccion2 varchar(50)
 );
 
 create table empleado(
@@ -27,8 +27,8 @@ puesto varchar(50) not null
 
 create table gama_producto(
 gama varchar(50) primary key not null,
-descripcion_texto text not null,
-descripcion_html text not null,
+descripcion_texto text ,
+descripcion_html text ,
 imagen varchar(256) not null
 );
 
@@ -39,13 +39,13 @@ nombre_contacto varchar(30) not null,
 apellido_contacto varchar(30) not null,
 telefono varchar(15) not null,
 fax varchar(15) not null,
-linea_direccion1 varchar(50) not null,
-linea_direccio0n2 varchar(50) not null,
+linea_direccion1 varchar(50),
+linea_direccio0n2 varchar(50) ,
 ciudad varchar(50) not null,
 region varchar(50) not null,
 pais varchar(50) not null,
 codigo_postal varchar(10) not null,
-codigo_empleado_rep_ventas int(11) not null,
+codigo_empleado_rep_ventas int(11) ,
 limite_credito decimal(15,2) not null
 );
 
@@ -913,21 +913,59 @@ INSERT INTO pago VALUES (30,'PayPal','ak-std-000024','2009-01-16',7863);
 INSERT INTO pago VALUES (35,'PayPal','ak-std-000025','2007-10-06',3321);
 INSERT INTO pago VALUES (38,'PayPal','ak-std-000026','2006-05-26',1171);
 
-SELECT codigo_oficina, ciudad FROM oficina; -- Devuelve un listado con el código de oficina y la ciudad donde hay oficinas.
-SELECT ciudad, telefono FROM oficina WHERE ciudad IN ('Madrid', 'Barcelona'); -- Devuelve un listado con la ciudad y el teléfono de las oficinas de España.
-SELECT nombre, apellido1, apellido2, email FROM empleado WHERE codigo_jefe = 7; -- Devuelve un listado con el nombre, apellidos y email de los empleados cuyo jefe tiene un código de jefe igual a 7
-SELECT nombre, apellido1, apellido2, puesto FROM empleado WHERE puesto != 'Representante Ventas'; -- Devuelve un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas.
-SELECT puesto, nombre, apellido1, apellido2, email FROM empleado WHERE codigo_jefe = 1; -- Devuelve el nombre del puesto, nombre, apellidos y email del jefe de la empresa.
-SELECT nombre FROM cliente WHERE ciudad IN ('Madrid', 'Barcelona'); -- Devuelve un listado con el nombre de los todos los clientes españoles..
-SELECT DISTINCT 'Pendiente' AS estado UNION SELECT 'Enviado' UNION SELECT 'Entregado' UNION SELECT 'Cancelado'; -- Devuelve un listado con los distintos estados por los que puede pasar un pedido.
+-- Devuelve un listado con el código de oficina y la ciudad donde hay oficinas.
+SELECT codigo_oficina, ciudad FROM oficina; 
 
-SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE fecha_entrega IS NULL OR fecha_entrega > fecha_esperada; -- Devuelve un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos que no han sido entregados a tiempo..
-SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE DATEDIFF(fecha_esperada, fecha_entrega) >= 2;
+ -- Devuelve un listado con la ciudad y el teléfono de las oficinas de España.
+SELECT ciudad, telefono FROM oficina WHERE ciudad IN ('Madrid', 'Barcelona');
 
-SELECT * FROM pedido WHERE YEAR(fecha_esperada) = 2009; -- Devuelve un listado de todos los pedidos que fueron en 2009..
-SELECT * FROM pedido WHERE MONTH(fecha_esperada) = 1; -- Devuelve un listado de todos los pedidos que han sido  en el mes de enero de cualquier año..
-SELECT * FROM pago WHERE YEAR(fecha_pago) = 2008 AND forma_pago = 'Paypal' ORDER BY fecha_pago DESC; -- Devuelve un listado con todos los pagos que se realizaron en el año 2008 mediante Paypal. Ordene el resultado de mayor a menor.
-SELECT DISTINCT forma_pago FROM pago; -- Devuelve un listado con todas las formas de pago que aparecen en la tabla pago. Tenga en cuenta que no deben aparecer formas de pago repetidas.
-SELECT * FROM producto WHERE gama = 'Ornamentales' AND unidades_stock > 100 ORDER BY precio_venta DESC; -- Devuelve un listado con todos los productos que pertenecen a la gama Ornamentales y que tienen más de 100 unidades en stock. El listado deberá estar ordenado por su precio de venta, mostrando en primer lugar los de mayor precio..
-SELECT * FROM cliente WHERE ciudad = 'Madrid' AND (Representante_Ventas = 11 OR Representante_Ventas = 30); -- Devuelve un listado con todos los clientes que sean de la ciudad de Madrid y cuyo representante de ventas tenga el código de empleado 11 o 30..
+-- Devuelve un listado con el nombre, apellidos y email de los empleados cuyo jefe tiene un código de jefe igual a 7.
+SELECT nombre, apellido1, apellido2, email FROM empleado WHERE codigo_jefe = 7; 
 
+ -- Devuelve un listado con el nombre, apellidos y puesto de aquellos empleados que no sean representantes de ventas.
+SELECT nombre, apellido1, apellido2, puesto FROM empleado WHERE puesto != 'Representante Ventas';
+
+-- Devuelve el nombre del puesto, nombre, apellidos y email del jefe de la empresa.
+SELECT puesto, nombre, apellido1, apellido2, email FROM empleado WHERE codigo_jefe = 1; 
+
+-- Devuelve un listado con el nombre de los todos los clientes españoles.
+SELECT nombre_cliente FROM cliente WHERE pais = 'Spain'; 
+
+ -- Devuelve un listado con los distintos estados por los que puede pasar un pedido.
+SELECT DISTINCT 'Pendiente' AS estado UNION SELECT 'Enviado' UNION SELECT 'Entregado' UNION SELECT 'Cancelado';
+
+-- Devuelve un listado con el código de pedido, código de cliente, fecha esperada y fecha de entrega de los pedidos que no han sido entregados a tiempo.
+SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega FROM pedido WHERE fecha_entrega IS NULL OR fecha_entrega > fecha_esperada; 
+
+-- Devuelve un listado con el código de cliente de aquellos clientes que realizaron algún pago en 2008.
+SELECT codigo_cliente, YEAR ('2008-12-17') As año_2008 From pedido; 
+
+ -- Devuelve un listado de todos los pedidos que fueron en 2009.
+SELECT fecha_pedido FROM pedido WHERE YEAR(fecha_pedido) = 2009;
+
+-- Devuelve un listado de todos los pedidos que han sido  en el mes de enero de cualquier año.
+SELECT * FROM pedido WHERE MONTH(fecha_esperada) = 1; 
+
+-- Devuelve un listado con todos los pagos que se realizaron en el año 2008 mediante Paypal. Ordene el resultado de mayor a menor.
+SELECT * FROM pago WHERE YEAR(fecha_pago) = 2008 AND forma_pago = 'Paypal' ORDER BY fecha_pago DESC;
+
+ -- Devuelve un listado con todas las formas de pago que aparecen en la tabla pago. Tenga en cuenta que no deben aparecer formas de pago repetidas.
+SELECT DISTINCT forma_pago FROM pago; 
+
+-- Devuelve un listado con todos los productos que pertenecen a la gama Ornamentales y que tienen más de 100 unidades en stock. El listado deberá estar ordenado por su precio de venta, mostrando en primer lugar los de mayor precio.
+SELECT nombre, precio_venta FROM producto WHERE gama = 'Ornamentales' AND cantidad_en_stock > 100 ORDER BY precio_venta DESC; 
+
+-- Devuelve un listado con todos los clientes que sean de la ciudad de Madrid y cuyo representante de ventas tenga el código de empleado 11 o 30.
+SELECT nombre_cliente, ciudad, codigo_empleado_rep_ventas from cliente where ciudad = 'Madrid' and codigo_empleado_rep_ventas in (11, 30);
+
+-- suma y resta.
+SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega from pedido where fecha_entrega <= fecha_esperada - interval 2 day;
+
+-- DATEDIFF.
+SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega from pedido where datediff(fecha_esperada, fecha_entrega) >=2;
+
+-- ADDDATE.
+SELECT codigo_pedido, codigo_cliente, fecha_esperada, fecha_entrega from pedido where fecha_entrega <= adddate(fecha_esperada, -2);
+
+-- DATE_FORMAT.
+SELECT codigo_cliente from pago where date_format(fecha_pago, '%Y') = '2008';
