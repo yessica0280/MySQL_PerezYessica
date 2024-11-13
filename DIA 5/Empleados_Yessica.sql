@@ -1,6 +1,6 @@
-create database funciones_t2;
+create database funcione_t2;
 
-use funciones_t2;
+use funcione_t2;
 
 -- ¿Que es una función detarerministica y una función no deterministica?
 -- Función deterministica: Siempre devuelven el mismo resultado para los mismos valores de entrada.
@@ -402,6 +402,7 @@ select lower(concat(nombre, ' ', apellido1, ' ', coalesce(`apellido2`, ''))) as 
 -- aparecer en dos columnas, una mostrará únicamente los dígitos del nif y la
 -- otra la letra.
 select id, substring(nif, 1, 8) as nif_numero, substring(nif, 9, 1) as nif_letra from empleado;
+select id, regexp_replace(nif, '[^A-Z]','') as letras, regexp_replace(nif, '[^0-9]','') from empleado; 
 
 -- 11. Lista el nombre de cada departamento y el valor del presupuesto actual del
 -- que dispone. Para calcular este dato tendrá que restar al valor del
