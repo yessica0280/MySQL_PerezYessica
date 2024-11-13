@@ -601,28 +601,27 @@ select * from empleado where empleado.id_departamento is null;
 
 -- 3. Devuelve un listado donde sólo aparezcan aquellos departamentos que no
 -- tienen ningún empleado asociado.
-select departamento.id, departamento.nombre, departamento.presupuesto, departamento.gastos from departamento 
+select departamento.id, departamento.nombre from departamento 
 left join empleado on departamento.id = empleado.id_departamento where empleado.id_departamento is null;
+
 
 -- 4. Devuelve un listado con todos los empleados junto con los datos de los
 -- departamentos donde trabajan. El listado debe incluir los empleados que no
 -- tienen ningún departamento asociado y los departamentos que no tienen
 -- ningún empleado asociado. Ordene el listado alfabéticamente por el
 -- nombre del departamento.
-select empleado.id, empleado.nif, empleado.nombre,empleado.apellido1, empleado.apellido2, empleado.id_departamento,
-departamento.id, departamento.nombre as departamento_nombre, departamento.presupuesto, departamento.gastos from empleado left join departamento
-on empleado.id_departamento = departamento.id union select empleado.id, empleado.nif, empleado.nombre, empleado.apellido1, empleado.apellido2, empleado.id_departamento, 
-departamento.id, departamento.nombre as departamento_nombre, departamento.presupuesto, departamento.gastos from departamento left join empleado 
-on empleado.id_departamento = departamento.id where empleado.id_departamento is null order by departamento_nombre asc;
+select * from empleado left join departamento on empleado.id_departamento = departamento.id 
+union 
+select * from departamento left join empleado on empleado.id_departamento = departamento.id
+order by 8 asc;
 
 -- 5. Devuelve un listado con los empleados que no tienen ningún departamento
 -- asociado y los departamentos que no tienen ningún empleado asociado.
 -- Ordene el listado alfabéticamente por el nombre del departamento.
-select empleado.id, empleado.nif, empleado.nombre, empleado.apellido1, empleado.apellido2, empleado.id_departamento,
-null as departamento_id, null as departamento_nombre, null as presupuesto, null as gastos from empleado where empleado.id_departamento is null
-union select  null as empleado_id, null as nif, null as empleado_nombre, null as apellido1, null as apellido2, null as id_departamento,
-departamento.id, departamento.nombre as departamento_nombre, departamento.presupuesto, departamento.gastos from departamento where not exists (select 1 from empleado 
-where empleado.id_departamento = departamento.id) order by departamento_nombre asc;
+select * from empleado left join departamento on empleado.id_departamento = departamento.id where empleado.id_departamento is null
+union 
+select * from departamento left join empleado on empleado.id_departamento = departamento.id where empleado.id_departamento is null
+order by 8 asc;
 
 -- Consultas resumen
 -- 1. Calcula la suma del presupuesto de todos los departamentos.
@@ -671,5 +670,5 @@ group by departamento.id;
 
 -- 12. Calcula el número de empleados que trabajan en cada unos de los
 -- departamentos que tienen un presupuesto mayor a 200000 euros.
-select departamento.nombre, count(empleado.id) as empleados from departamento left join empleado on departamento.id = empleado.id_departamento 
+select departamento.nombre, count(empleado.id) as empleados, presupuesto from departamento left join empleado on departamento.id = empleado.id_departamento 
 where departamento.presupuesto > 200000 group by departamento.id;
