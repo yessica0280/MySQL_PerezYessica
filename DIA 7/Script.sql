@@ -24,7 +24,7 @@ begin
 end //
 delimiter ;
 
-select fecha_entrega as alquileres,(valor_cotizado - valor_pagado) as presupuesto_actual from alquileres;
+select fecha_entrega as alquileres,(valor_cotizado - valor_pagado) as presupuesto_inicial from alquileres;
 
 -- 5.
 select fecha_entrega, valor_pagado as presupesto_actual from alquileres order by presupesto_actual asc;
@@ -64,6 +64,18 @@ select * from clientes limit 5 offset 2;
 select tipo, valor_alquiler_semana from tipo_vehiculo where valor_alquiler_semana >= 150000;
 
 -- 13. 
+DELIMITER $$
+
+CREATE FUNCTION EstaEnRango(valor DECIMAL(10,2)) 
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+    -- Verifica si el valor está dentro del rango de 110.00 a 210.00
+    RETURN valor >= 110.00 AND valor <= 210.00;
+END $$
+
+DELIMITER ;
+
 select valor_pagado from alquileres where valor_pagado >= 110.00 and valor_pagado <= 210.00;
 
 -- 14. 
@@ -110,3 +122,6 @@ select count(*) as vehiculos from vehiculos where sunroof is false;
 
 -- 24. 
 select fecha_inicio, fecha_fin from descuento where fecha_fin > fecha_inicio;
+
+-- 25. 
+select lower(concat(nombre1, ' ', apellido1, ' ', coalesce(`apellido2`, ''))) as nombre_apellido from clientes;
